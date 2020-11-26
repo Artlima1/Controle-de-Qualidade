@@ -1,0 +1,35 @@
+{
+  "name": "backend-controle-qualidade",
+  "version": "1.0.0",
+  "description": "Controle-de-Qualidade",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Artlima1/backend-controleQualidade.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Artlima1/backend-controleQualidade/issues"
+  },
+  "homepage": "https://github.com/Artlima1/backend-controleQualidade#readme",
+  "dependencies": {
+    "celebrate": "^13.0.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "firebase": "^8.1.1",
+    "firebase-admin": "^9.4.1",
+    "knex": "^0.21.12",
+    "sqlite3": "^5.0.0",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
