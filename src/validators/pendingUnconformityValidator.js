@@ -5,7 +5,6 @@ const pendingUnconformityValidator = new Object();
 
 pendingUnconformityValidator.create = {
     [Segments.BODY]: Joi.object().keys({
-        created_by: Joi.string().required(),
         responsable: Joi.string().required(),
         description: Joi.string().required(),
         area: Joi.string().valid('adm', 'qualidade', 'biomol', 'citometria', 'citogenetica', 'histocompatibilidade').required(),

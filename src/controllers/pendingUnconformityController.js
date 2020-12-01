@@ -4,18 +4,19 @@ const Users = require("../models/UserModel");
 module.exports = {
   async createUnconformity(req, res) {
     try {
-      const unconformity = req.body;
-
+      let unconformity = req.body;
+      unconformity.created_by = req.session.user.user_id;
+      
       const response = await PendingUnconformity.create(unconformity);
 
-      return res.status(200).json(response);
+      return res.status(200).json({response});
     } catch (error) {
       console.warn(error);
       return res.status(500).json("Internal Server Error");
     }
   },
 
-  async getUnconformities(req, res) {
+  async getAllUnconformities(req, res) {
     try {
       const filters = req.query;
 
@@ -35,7 +36,35 @@ module.exports = {
         })
       );
 
-      return res.status(200).json(response);
+      return res.status(200).json({response});
+    } catch (error) {
+      console.warn(error);
+      return res.status(500).json("Internal Server Error");
+    }
+  },
+  
+  async getMyUnconformities(req, res) {
+    try {
+      let filters = req.query;
+      filters.responsable = req.session.user.user_id;
+      
+      const unconformities = await PendingUnconformity.read(filters);
+
+      const response = await Promise.all(
+        unconformities.map(async (unconformity) => {
+          const created_by = await Users.read({
+            user_id: unconformity.created_by,
+          });
+          const responsable = await Users.read({
+            user_id: unconformity.responsable,
+          });
+          unconformity.created_by = created_by[0];
+          unconformity.responsable = responsable[0];
+          return unconformity;
+        })
+      );
+
+      return res.status(200).json({response});
     } catch (error) {
       console.warn(error);
       return res.status(500).json("Internal Server Error");
