@@ -26,4 +26,11 @@ module.exports = {
     if (validToken) return next();
     return response.status(403).json({ error: "Invalid authorization token" });
   },
+
+  async isAdmin(request, response, next) {
+    if (request.session.user_type !== "adm")
+      return response.status(403).json({ error: "Access denied!" });
+
+    return next();
+  },
 };
