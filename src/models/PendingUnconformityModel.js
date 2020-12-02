@@ -29,4 +29,12 @@ module.exports = {
       .del();
     return response;
   },
+
+  async getFieldById(pending_unconformity_id, field) {
+    const response = await connection("pending_unconformity")
+      .where("pending_unconformity_id", pending_unconformity_id)
+      .select(field)
+      .first();
+    return response[field];
+  },
 };

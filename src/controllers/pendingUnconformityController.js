@@ -6,13 +6,19 @@ module.exports = {
     try {
       let unconformity = req.body;
       unconformity.created_by = req.session.user.user_id;
+
+      const responsable = await Users.read({user_id: unconformity.responsable});
+
+      if (responsable.length===0){
+        return res.status(400).json({message: "Responsable not found!"});
+      }
       
       const response = await PendingUnconformity.create(unconformity);
 
       return res.status(200).json({response});
     } catch (error) {
       console.warn(error);
-      return res.status(500).json("Internal Server Error");
+      return res.status(500).json({message: "Internal Server Error"});
     }
   },
 
@@ -22,6 +28,7 @@ module.exports = {
 
       const unconformities = await PendingUnconformity.read(filters);
 
+      //Joining with users table, but storing responsable and user in keys insted of in the main object
       const response = await Promise.all(
         unconformities.map(async (unconformity) => {
           const created_by = await Users.read({
@@ -39,7 +46,7 @@ module.exports = {
       return res.status(200).json({response});
     } catch (error) {
       console.warn(error);
-      return res.status(500).json("Internal Server Error");
+      return res.status(500).json({message: "Internal Server Error"});
     }
   },
   
@@ -47,6 +54,7 @@ module.exports = {
     try {
       let filters = req.query;
       filters.responsable = req.session.user.user_id;
+      console.log("🚀 ~ file: pendingUnconformityController.js ~ line 51 ~ getMyUnconformities ~ req.session.user", req.session.user)
       
       const unconformities = await PendingUnconformity.read(filters);
 
@@ -67,7 +75,7 @@ module.exports = {
       return res.status(200).json({response});
     } catch (error) {
       console.warn(error);
-      return res.status(500).json("Internal Server Error");
+      return res.status(500).json({message: "Internal Server Error"});
     }
   },
 
@@ -88,7 +96,7 @@ module.exports = {
       }
     } catch (error) {
       console.warn(error);
-      return res.status(500).json("Internal Server Error");
+      return res.status(500).json({message: "Internal Server Error"});
     }
   },
 
@@ -105,7 +113,7 @@ module.exports = {
       }
     } catch (error) {
       console.warn(error);
-      return res.status(500).json("Internal Server Error");
+      return res.status(500).json({message: "Internal Server Error"});
     }
   },
 };
