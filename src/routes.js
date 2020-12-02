@@ -7,11 +7,13 @@ const {authenticateToken, isManager} = require('./utils/Authentication')
 const userController = require('./controllers/userController');
 const pendingUnconformityController = require('./controllers/pendingUnconformityController');
 const resolvedUnconformityController = require('./controllers/resolvedUnconformityController');
+const completeUnconformityController = require('./controllers/completeUnconformityController');
 const sessionController = require('./controllers/sessionController');
 
 const userValidator = require('./validators/userValidator');
 const pendingUnconformityValidator = require('./validators/pendingUnconformityValidator');
 const resolvedUnconformityValidator = require('./validators/resolvedUnconformityValidator');
+const completeUnconformityValidator = require('./validators/completeUnconformityValidator');
 const sessionValidator = require('./validators/sessionValidator');
 
 
@@ -24,14 +26,19 @@ routes.delete('/users/:user_id', celebrate(userValidator.delete), authenticateTo
 routes.get('/pendingunconformity', celebrate(pendingUnconformityValidator.get), authenticateToken, isManager,pendingUnconformityController.getAllUnconformities);
 routes.get('/mypendingunconformities', celebrate(pendingUnconformityValidator.get), authenticateToken, pendingUnconformityController.getMyUnconformities);
 routes.post('/pendingunconformity', celebrate(pendingUnconformityValidator.create), authenticateToken, pendingUnconformityController.createUnconformity);
-routes.put('/pendingunconformity/:pending_unconformity_id', authenticateToken, celebrate(pendingUnconformityValidator.update), pendingUnconformityController.updateUnconformity);
-routes.delete('/pendingunconformity/:pending_unconformity_id', isManager,authenticateToken, celebrate(pendingUnconformityValidator.delete), pendingUnconformityController.deleteUnconformity);
+routes.put('/pendingunconformity/:pending_unconformity_id', celebrate(pendingUnconformityValidator.update), authenticateToken, pendingUnconformityController.updateUnconformity);
+routes.delete('/pendingunconformity/:pending_unconformity_id', celebrate(pendingUnconformityValidator.delete), isManager,authenticateToken, pendingUnconformityController.deleteUnconformity);
 
 //Resolved Unconformity
 routes.get('/resolvedunconformity', celebrate(resolvedUnconformityValidator.get), authenticateToken, isManager, resolvedUnconformityController.getAllUnconformities);
 routes.post('/resolvedunconformity', celebrate(resolvedUnconformityValidator.create), authenticateToken, resolvedUnconformityController.createUnconformity);
-routes.put('/resolvedunconformity/:resolved_unconformity_id', authenticateToken, celebrate(resolvedUnconformityValidator.update), resolvedUnconformityController.updateUnconformity);
-routes.delete('/resolvedunconformity/:resolved_unconformity_id', authenticateToken, isManager, celebrate(resolvedUnconformityValidator.delete), resolvedUnconformityController.deleteUnconformity);
+routes.put('/resolvedunconformity/:resolved_unconformity_id', celebrate(resolvedUnconformityValidator.update), authenticateToken, resolvedUnconformityController.updateUnconformity);
+routes.delete('/resolvedunconformity/:resolved_unconformity_id', celebrate(resolvedUnconformityValidator.delete), authenticateToken, isManager, resolvedUnconformityController.deleteUnconformity);
+
+routes.get('/completeunconformity', celebrate(completeUnconformityValidator.get), authenticateToken, isManager, completeUnconformityController.getAllUnconformities);
+routes.post('/completeunconformity', celebrate(completeUnconformityValidator.create), authenticateToken, isManager, completeUnconformityController.createUnconformity);
+routes.put('/completeunconformity/:complete_unconformity_id', celebrate(completeUnconformityValidator.update), authenticateToken, isManager, completeUnconformityController.updateUnconformity);
+routes.delete('/completeunconformity/:complete_unconformity_id', celebrate(completeUnconformityValidator.delete), authenticateToken, isManager, completeUnconformityController.deleteUnconformity);
 
 //Session
 routes.post('/signin', celebrate(sessionValidator.signIn), sessionController.signIn);
