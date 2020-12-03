@@ -1,3 +1,4 @@
+const { response } = require("express");
 const connection = require("../database/connection");
 
 module.exports = {
@@ -22,16 +23,18 @@ module.exports = {
   },
 
   async getUnconformityCountByRisk(){
-    response = await connection("risk_in_unconformity")
-    .count("unconformity_id")
+    const response = await connection("risk_in_unconformity")
+    .count("unconformity_id AS count")
     .groupBy("risk_id")
+    .select("risk_id")
+    return response;
   },
 
   async delete(risk_id, unconformity_id) {
     const query = { risk_id, unconformity_id };
     const response = await connection("risk_in_unconformity")
-      .where(query)
-      .del();
+    .where(query)
+    .del();
     return response;
   },
 };

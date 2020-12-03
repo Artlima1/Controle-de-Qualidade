@@ -48,6 +48,7 @@ routes.get('/risk', celebrate(riskValidator.get), authenticateToken, isManager, 
 routes.post('/risk', celebrate(riskValidator.create), authenticateToken, isManager, riskController.createrisk);
 routes.put('/risk/:risk_id', celebrate(riskValidator.update), authenticateToken, isManager, riskController.updatedRisk);
 routes.delete('/risk/:risk_id', celebrate(riskValidator.delete), authenticateToken, isManager, riskController.deleterisk);
+routes.get('/unconformitiesbyrisk', authenticateToken, isManager, riskController.getRiskUnconformitiesCount);
 
 //Session
 routes.post('/signin', celebrate(sessionValidator.signIn), sessionController.signIn);
