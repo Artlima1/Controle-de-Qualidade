@@ -7,6 +7,7 @@ exports.up = function(knex) {
         table.string('immediate_action').notNullable();
         table.string('root_cause').notNullable();
         table.string('corrective_action').notNullable();
+        table.boolean('completed').notNullable();
     });
 };
 

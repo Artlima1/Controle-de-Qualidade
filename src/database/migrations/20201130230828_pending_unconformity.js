@@ -12,6 +12,7 @@ exports.up = function(knex) {
         table.enu('type', ['real', 'potencial']).notNullable();
         table.enu('classification', ['NearMiss', 'Evento Adverso', 'Incidente sem dano', 'Circunstancia notificavel']).notNullable();
         table.enu('severity', ['leve', 'moderada', 'grave' ]).notNullable();
+        table.boolean('resolved').notNullable();
         table.timestamps(true, true);
     });
 };
