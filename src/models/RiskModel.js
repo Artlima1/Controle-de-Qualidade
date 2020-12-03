@@ -13,13 +13,18 @@ module.exports = {
 
   async update(risk_id, updated_risk) {
     const response = await connection("risk")
-      .where("risk_id", risk_id)
+      .where({risk_id})
       .update(updated_risk);
     return response;
   },
 
   async delete(risk_id) {
-    const response = await connection("risk").where("risk_id", risk_id).del();
+    const response = await connection("risk").where({risk_id}).del();
     return response;
   },
+
+  async checkExitence(ids){
+    const response = await connection("risk").whereIn("risk_id", ids).count("risk_id AS count").first();
+    return response.count;
+  }
 };

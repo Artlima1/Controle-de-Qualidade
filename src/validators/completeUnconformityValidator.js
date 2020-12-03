@@ -7,6 +7,7 @@ completeUnconformityValidator.create = {
     [Segments.BODY]: Joi.object().keys({
         resolved_unconformity_id: Joi.string().required(),
         efficiency_evaluation: Joi.string().required(),
+        risks: Joi.array().items(Joi.number().required()),
     })
 }
 
@@ -28,7 +29,7 @@ completeUnconformityValidator.update = {
 
 completeUnconformityValidator.delete = {
     [Segments.PARAMS]: Joi.object().keys({
-        resolved_unconformity_id: Joi.string().required(),
+        complete_unconformity_id: Joi.string().required(),
     })
 }
 

@@ -20,14 +20,14 @@ module.exports = {
 
   async update(complete_unconformity_id, updated_complete_unconformity) {
     const response = await connection("complete_unconformity")
-      .where("complete_unconformity_id", complete_unconformity_id)
+      .where({complete_unconformity_id})
       .update(updated_complete_unconformity);
     return response;
   },
 
   async delete(complete_unconformity_id) {
     const response = await connection("complete_unconformity")
-      .where("complete_unconformity_id", complete_unconformity_id)
+      .where({complete_unconformity_id})
       .del();
     return response;
   },

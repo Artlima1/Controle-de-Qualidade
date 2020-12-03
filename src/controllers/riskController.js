@@ -30,7 +30,7 @@ module.exports = {
       const newFields = req.body;
       const risk_id = req.params.risk_id;
 
-      const response = await ResolvedUnconformity.update(
+      const response = await Risk.update(
         risk_id,
         newFields
       );

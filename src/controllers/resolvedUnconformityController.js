@@ -14,7 +14,12 @@ module.exports = {
       if (responsable_id !== req.session.user.user_id) {
         return res.status(403).json({message: "You're not responsable for this unconformity!"});
       }
-      
+
+      const exists = await ResolvedUnconformity.read({pending_unconformity_id: unconformity.pending_unconformity_id});
+      if (exists.length !== 0) {
+        return res.status(400).json({message: "this unconformity has already been resolved!"});
+      }
+
       const response = await ResolvedUnconformity.create(unconformity);
 
       return res.status(200).json({response});

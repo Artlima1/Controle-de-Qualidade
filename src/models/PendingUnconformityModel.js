@@ -18,21 +18,21 @@ module.exports = {
 
   async update(pending_unconformity_id, updated_pending_unconformity) {
     const response = await connection("pending_unconformity")
-      .where("pending_unconformity_id", pending_unconformity_id)
+      .where({pending_unconformity_id})
       .update(updated_pending_unconformity);
     return response;
   },
 
   async delete(pending_unconformity_id) {
     const response = await connection("pending_unconformity")
-      .where("pending_unconformity_id", pending_unconformity_id)
+      .where({pending_unconformity_id})
       .del();
     return response;
   },
 
   async getFieldById(pending_unconformity_id, field) {
     const response = await connection("pending_unconformity")
-      .where("pending_unconformity_id", pending_unconformity_id)
+      .where({pending_unconformity_id})
       .select(field)
       .first();
     return response[field];
