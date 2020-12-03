@@ -1,6 +1,7 @@
 const CompleteUnconformity = require("../models/CompleteUnconformityModel");
 const ResolvedUnconformity = require("../models/resolvedUnconformityModel");
 const RiskInUnconformity = require("../models/RiskInUnconformityModel");
+const NormInUnconformity = require("../models/NormInUnconformityModel");
 const Risk = require("../models/RiskModel");
 const Users = require("../models/UserModel");
 
@@ -9,31 +10,36 @@ module.exports = {
     try {
       let unconformity = req.body;
       const risks = req.body.risks;
-      delete unconformity.risks;
+      const norms = req.body.norms;
 
-      const resolved_unconformity_id = await ResolvedUnconformity.read({resolved_unconformity_id: unconformity.resolved_unconformity_id})
-      if (resolved_unconformity_id.length===0){
-        return res.status(400).json({message: "Resolved Unconformity not found"});
-      }
-
-      const exists = await CompleteUnconformity.read({resolved_unconformity_id: unconformity.resolved_unconformity_id});
-      if (exists.length !== 0) {
-        return res.status(400).json({message: "This unconformity has already been completed!"});
-      }
-      
-      const completeUnconformity = await CompleteUnconformity.create(unconformity);
-      const existenceAmount = await Risk.checkExitence(risks);
-      if (risks.length!==existenceAmount){
-        return res.status(400).json({ message: "One or more of the risks doesn't exist"});
-      }
-
-      risks_in_unconformity = await risks.map(risk => {
-        return {risk_id: risk, unconformity_id: completeUnconformity}
+      const [resolved_unconformity] = await ResolvedUnconformity.read({
+        resolved_unconformity_id: unconformity.resolved_unconformity_id,
       });
+      if (!resolved_unconformity) {
+        return res
+          .status(400)
+          .json({ message: "Resolved Unconformity not found" });
+      }
+      if (resolved_unconformity.completed) {
+        return res
+          .status(400)
+          .json({
+            message: "Resolved Unconformity has already been completed!",
+          });
+      }
 
-      await RiskInUnconformity.create(risks_in_unconformity);
+      const existenceAmount = await Risk.checkExitence(risks);
+      if (risks.length !== existenceAmount) {
+        return res
+          .status(400)
+          .json({ message: "One or more of the risks doesn't exist" });
+      }
 
-      return res.status(200).json({ completeUnconformity });
+      const completeUnconformity_id = await CompleteUnconformity.create(
+        unconformity
+      );
+
+      return res.status(200).json({ completeUnconformity_id });
     } catch (error) {
       console.warn(error);
       return res.status(500).json({ message: "Internal Server Error" });
@@ -55,11 +61,20 @@ module.exports = {
           const responsable = await Users.read({
             user_id: unconformity.responsable,
           });
-          const risks_in_unconformity = await RiskInUnconformity.getRisksInUnconformity(unconformity.complete_unconformity_id);
-          console.log("🚀 ~ file: completeUnconformityController.js ~ line 49 ~ unconformities.map ~ unconformity.complete_unconformity_id", unconformity.complete_unconformity_id)
-          console.log("🚀 ~ file: completeUnconformityController.js ~ line 49 ~ unconformities.map ~ risks_in_unconformity", risks_in_unconformity)
-          
-          unconformity.risks = risks_in_unconformity;
+          const response_risks = await RiskInUnconformity.getRisksInUnconformity(
+            unconformity.complete_unconformity_id
+          );
+          const response_norms = await NormInUnconformity.getNormsInUnconformity(
+            unconformity.complete_unconformity_id
+          );
+
+          unconformity.risks = response_risks.map((risk) => {
+            return risk.description;
+          });
+          unconformity.norms = response_norms.map((norm) => {
+            return norm.norm_item;
+          });
+
           unconformity.created_by = created_by[0];
           unconformity.responsable = responsable[0];
           return unconformity;

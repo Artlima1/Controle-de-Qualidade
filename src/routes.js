@@ -21,7 +21,7 @@ const sessionValidator = require('./validators/sessionValidator');
 
 //User
 routes.get('/users', celebrate(userValidator.getUsers), authenticateToken, userController.getUsers);
-routes.post('/users',  celebrate(userValidator.create), authenticateToken, isManager, userController.createUser);
+routes.post('/users',  celebrate(userValidator.create),  userController.createUser);
 routes.delete('/users/:user_id', celebrate(userValidator.delete), authenticateToken, isManager, userController.deleteUser);
 
 //Pending Unconformity

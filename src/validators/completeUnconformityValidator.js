@@ -8,6 +8,7 @@ completeUnconformityValidator.create = {
         resolved_unconformity_id: Joi.string().required(),
         efficiency_evaluation: Joi.string().required(),
         risks: Joi.array().items(Joi.number().required()),
+        norms: Joi.array().items(Joi.string().required()),
     })
 }
 

@@ -7,16 +7,14 @@ module.exports = {
     try {
       let unconformity = req.body;
 
-      const responsable_id = await PendingUnconformity.getFieldById(unconformity.pending_unconformity_id, "responsable");
-			if(responsable_id === 0) {
+      const [pending_unconformity] = await PendingUnconformity.read({pending_unconformity_id: unconformity.pending_unconformity_id});
+			if(!pending_unconformity) {
         return res.status(400).json({message: "Unconformity not found"});
       }
-      if (responsable_id !== req.session.user.user_id) {
+      if (pending_unconformity.responsable !== req.session.user.user_id) {
         return res.status(403).json({message: "You're not responsable for this unconformity!"});
       }
-
-      const exists = await ResolvedUnconformity.read({pending_unconformity_id: unconformity.pending_unconformity_id});
-      if (exists.length !== 0) {
+      if (pending_unconformity.resolved) {
         return res.status(400).json({message: "this unconformity has already been resolved!"});
       }
 

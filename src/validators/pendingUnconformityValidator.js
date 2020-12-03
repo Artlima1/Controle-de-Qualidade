@@ -26,6 +26,7 @@ pendingUnconformityValidator.get = {
         type: Joi.string().valid('real', 'potencial').optional(),
         classification: Joi.string().valid('NearMiss', 'Evento Adverso', 'Incidente sem dano', 'Circunstancia notificavel').optional(),
         severity: Joi.string().valid('leve', 'moderada', 'grave').optional(),
+        resolved: Joi.number().valid(0, 1).optional(),
     })
 }
 

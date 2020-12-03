@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 module.exports = {
   async create(pending_unconformity) {
     pending_unconformity.pending_unconformity_id = uuidv4();
+    pending_unconformity.resolved = false;
     await connection("pending_unconformity").insert(pending_unconformity);
     return pending_unconformity.pending_unconformity_id;
   },
@@ -30,11 +31,4 @@ module.exports = {
     return response;
   },
 
-  async getFieldById(pending_unconformity_id, field) {
-    const response = await connection("pending_unconformity")
-      .where({pending_unconformity_id})
-      .select(field)
-      .first();
-    return response[field];
-  },
 };

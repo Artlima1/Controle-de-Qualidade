@@ -1,10 +1,27 @@
 const connection = require("../database/connection");
 const { v4: uuidv4 } = require("uuid");
+const trxProvider = connection.transactionProvider();
 
 module.exports = {
   async create(complete_unconformity) {
     complete_unconformity.complete_unconformity_id = uuidv4();
-    await connection("complete_unconformity").insert(complete_unconformity);
+
+    risks_in_unconformity = await complete_unconformity.risks.map(risk => {
+      return {risk_id: risk, unconformity_id: complete_unconformity.complete_unconformity_id}
+    });
+    delete complete_unconformity.risks;
+
+    norms_in_unconformity = await complete_unconformity.norms.map(norm => {
+      return {norm_item: norm, unconformity_id: complete_unconformity.complete_unconformity_id}
+    });
+    delete complete_unconformity.norms;
+
+    const trx = await trxProvider();
+    await trx("risk_in_unconformity").insert(risks_in_unconformity);
+    await trx("norm_in_unconformity").insert(norms_in_unconformity);
+    await trx("resolved_unconformity").where({resolved_unconformity_id: complete_unconformity.resolved_unconformity_id}).update({completed: true});
+    await trx("complete_unconformity").insert(complete_unconformity);
+    await trx.commit();
     return complete_unconformity.complete_unconformity_id;
   },
 
