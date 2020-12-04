@@ -68,9 +68,7 @@ module.exports = {
             unconformity.complete_unconformity_id
           );
 
-          unconformity.risks = response_risks.map((risk) => {
-            return risk.description;
-          });
+          unconformity.risks = response_risks;
           unconformity.norms = response_norms.map((norm) => {
             return norm.norm_item;
           });
